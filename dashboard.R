@@ -10,7 +10,8 @@ packages<-c("shiny",
             "plotly",
             "formattable",
             "dplyr",
-            "leaflet")
+            "leaflet",
+            "DT")
 package.check <- lapply(
   packages,
   FUN = function(x) {
@@ -20,6 +21,14 @@ package.check <- lapply(
     }
   }
 )
+#Bancos de dados
+caracterizacao_informal_turismo_apos_2015<-read.csv("DATASET/caracterizacao_informal_turismo_apos_2015.csv")
+caracterizacao_informal_turismo_ate_2015<-read.csv("DATASET/caracterizacao_informal_turismo_ate_2015.csv")
+
+Choise_contexto<-c("Caracterização Informal do Turismo Até 2015","Caracterização Informal do Turismo Após 2015")
+Choise_Informal_apos_2015<-c("Ano","Idade","Instrução","Contribuição.à.Previdência.Social","Região","UF","Gênero","Remuneração","Horas.Trabalhadas.Semana","Atividade.Característica.do.Turismo")
+Choise_Informal_ate_2015<-c("Ano","Idade","Instrução","Contribuição.à.Previdência.Social","Região","Gênero","Remuneração","Horas.Trabalhadas.Semana","Atividade.Característica.do.Turismo")
+
 shinyApp(
   ui = dashboardPage(
     
@@ -32,71 +41,76 @@ shinyApp(
         #img(src = "ShinyDashboardPlus_FINAL.svg")
       ),
       leftUi = tagList(
-        dropdownBlock(
-          id = "mydropdown",
-          title = "Contexto",
-          icon = icon("globe-americas"),
-          prettyRadioButtons(
-            inputId = "Id039afdfgtd1",
-            label = "Variável:", 
-            choices = c("Var 1", "Var 2", "Var 3"),
-            selected = c("Var 1"),
-            icon = icon("check"), 
-            bigger = F
-          )
-        ),
-        dropdownBlock(
-          id = "mydropdown",
-          title = "Linha",
-          icon = icon("grip-lines"),
-          prettyRadioButtons(
-            inputId = "Id039afdfgtd",
-            label = "Variável:", 
-            choices = c("Var 1", "Var 2", "Var 3"),
-            selected = c("Var 1"),
-            icon = icon("check"), 
-            bigger = F
-          )
-        ),
-        dropdownBlock(
-          id = "mydropdown2",
-          title = "Coluna",
-          icon = icon("columns"),
-          prettyRadioButtons(
-            inputId = "Id039afghd",
-            label = "Variável:", 
-            choices = c("Var 1", "Var 2", "Var 3"),
-            selected = c("Var 1"),
-            icon = icon("check"), 
-            bigger = F
-          )
-        ),
-        dropdownBlock(
-          id = "mydropdown3",
-          title = "Filtro",
-          icon = icon("filter"),
-          prettyRadioButtons(
-            inputId = "Id039afdg",
-            label = "Variável:", 
-            choices = c("Var 1", "Var 2", "Var 3"),
-            selected = c("Var 1"),
-            icon = icon("check"), 
-            bigger = T
-          )
-        ),
-        dropdownBlock(
-          id = "mydropdown3",
-          title = "Métrica",
-          icon = icon("bar-chart-o"),
-          prettyRadioButtons(
-            inputId = "Id039afdgdfads",
-            label = "Variável:", 
-            choices = c("Var 1", "Var 2", "Var 3"),
-            selected = c("Var 1"),
-            icon = icon("check"), 
-            bigger = T
-          )
-        )
+        #dropdownBlock(
+        #  id = "mydropdown",
+        #  title = "Contexto",
+        #  icon = icon("globe-americas"),
+         # prettyRadioButtons(
+         #   inputId = "Id039afdfgtd1",
+         #   label = "Variável:", 
+         #   choices = Choise_contexto,
+         #   selected = c("Var 1"),
+         #   icon = icon("check"), 
+         #   bigger = F
+         # )
+      #   pickerInput(
+      #     inputId = "Id081",
+      #     label = "Default", 
+      #     choices = c("a", "b", "c", "d")
+      #   ),
+      #  #),
+      #  dropdownBlock(
+      #    id = "mydropdown",
+      #    title = "Linha",
+      #    icon = icon("grip-lines"),
+      #    prettyRadioButtons(
+      #      inputId = "Id039afdfgtd",
+      #      label = "Variável:", 
+      #      choices = c("Var 1", "Var 2", "Var 3"),
+      #      selected = c("Var 1"),
+      #      icon = icon("check"), 
+      #      bigger = F
+      #    )
+      #  ),
+      #  dropdownBlock(
+      #    id = "mydropdown2",
+      #    title = "Coluna",
+      #    icon = icon("columns"),
+      #    prettyRadioButtons(
+      #      inputId = "Id039afghd",
+      #      label = "Variável:", 
+      #      choices = c("Var 1", "Var 2", "Var 3"),
+      #      selected = c("Var 1"),
+      #      icon = icon("check"), 
+      #      bigger = F
+      #    )
+      #  ),
+      #  dropdownBlock(
+      #    id = "mydropdown3",
+      #    title = "Filtro",
+      #    icon = icon("filter"),
+      #    prettyRadioButtons(
+      #      inputId = "Id039afdg",
+      #      label = "Variável:", 
+      #      choices = c("Var 1", "Var 2", "Var 3"),
+      #      selected = c("Var 1"),
+      #      icon = icon("check"), 
+      #      bigger = T
+      #    )
+      #  ),
+      #  dropdownBlock(
+      #    id = "mydropdown3",
+      #    title = "Métrica",
+      #    icon = icon("bar-chart-o"),
+      #    prettyRadioButtons(
+      #      inputId = "Id039afdgdfads",
+      #      label = "Variável:", 
+      #      choices = c("Var 1", "Var 2", "Var 3"),
+      #      selected = c("Var 1"),
+      #      icon = icon("check"), 
+      #      bigger = T
+      #    )
+      #  )
       ),
       
       #dropdownMenu(
@@ -119,9 +133,9 @@ shinyApp(
         id = "tabs3sfd",
         menuItem("Contexto", icon = icon("globe-americas"),
                  pickerInput(
-                   inputId = "Id08412",
+                   inputId = "ContextoID",
                    label = "Contexto", 
-                   choices = c("Dimensão da ocupação do Turismo","Caracterização da ocupação formal do turismo","Caracterização da ocupação informal do turismo","Ocupação na economia"),selected = "Dimensão da ocupação do Turismo",
+                   choices = Choise_contexto,selected = Choise_contexto[2],
                    options = list(
                      `live-search` = TRUE)
                  )
@@ -132,40 +146,19 @@ shinyApp(
         # Setting id makes input$tabs give the tabName of currently-selected tab
         id = "tabs3",
         menuItem("Linha", icon = icon("grip-lines"),
-                 prettyRadioButtons(
-                   inputId = "Id039afghdd1",
-                   label = "Variável:", 
-                   choices = c("Var 1", "Var 2", "Var 3"),
-                   selected = c("Var 1"),
-                   icon = icon("check"), 
-                   bigger = F
-                 )
+                 uiOutput("LinhaChoices")
         )
       ),sidebarMenu(
         # Setting id makes input$tabs give the tabName of currently-selected tab
         id = "tabs3",
         menuItem("Coluna", icon = icon("columns"),
-                 prettyRadioButtons(
-                   inputId = "Id039afghdd",
-                   label = "Variável:", 
-                   choices = c("Var 1", "Var 2", "Var 3"),
-                   selected = c("Var 1"),
-                   icon = icon("check"), 
-                   bigger = F
-                 )
+                 uiOutput("ColunaChoices")
         )
       ),sidebarMenu(
         # Setting id makes input$tabs give the tabName of currently-selected tab
         id = "tabs3",
-        menuItem("Linha", icon = icon("filter"),
-                 prettyRadioButtons(
-                   inputId = "Id039afghdd2",
-                   label = "Variável:", 
-                   choices = c("Var 1", "Var 2", "Var 3"),
-                   selected = c("Var 1"),
-                   icon = icon("check"), 
-                   bigger = F
-                 )
+        menuItem("Filtro", icon = icon("filter"),
+                 uiOutput("FiltroChoices")
         )
       ),sidebarMenu(
         # Setting id makes input$tabs give the tabName of currently-selected tab
@@ -359,9 +352,10 @@ shinyApp(
           dropdownDivider(),
           boxDropdownItem("item 3", href = "#", icon = icon("th"))
         ),
-        formattableOutput("table")
+        #formattableOutput("table")
+        DT::dataTableOutput("table")
       ),  
-      
+      #fluidRow(DT::dataTableOutput("table")),
       box(
         title = "Gráfico",
         closable = TRUE,
@@ -570,6 +564,79 @@ através do link (", a("clique aqui", href = "https://www.ipea.gov.br/extrator/s
     )
   ),
   server = function(input, output) {
+    
+    
+    #################
+    #Banco de dados que será utilizado
+    dataset<-reactive({
+      if(input$ContextoID=="Caracterização Informal do Turismo Após 2015"){
+        data<-caracterizacao_informal_turismo_apos_2015
+      }
+      if(input$ContextoID=="Caracterização Informal do Turismo Até 2015"){
+        data<-caracterizacao_informal_turismo_ate_2015
+      }  
+      data
+    })
+    #Select imput via reativos
+    var_choise<-reactive({
+      if(input$ContextoID=="Caracterização Informal do Turismo Após 2015"){
+        var_escolha<-Choise_Informal_apos_2015
+      }
+      if(input$ContextoID=="Caracterização Informal do Turismo Até 2015"){
+        var_escolha<-Choise_Informal_ate_2015
+      }  
+      var_escolha
+    })
+    
+    output$LinhaChoices<-renderUI({
+      prettyRadioButtons(
+        inputId = "LinhaID",
+        label = "Linha:", 
+        choices = var_choise(),
+        #selected = choices[[3]],
+        icon = icon("check"), 
+        bigger = F
+      )
+    })
+    
+    output$ColunaChoices<-renderUI({
+      prettyRadioButtons(
+        inputId = "ColunaID",
+        label = "Coluna:", 
+        choices = var_choise(),
+        #selected = choices[[3]],
+        icon = icon("check"), 
+        bigger = F
+      )
+    })
+    
+    #Tabelas e gráficos
+    
+    tabela1=reactive({
+      b<-xtabs(`Número.de.ocupações`~dataset()[[input$LinhaID]]+dataset()[[input$ColunaID]],dataset()) #o que vai somar ~linha+coluna
+      c<-as.data.frame.matrix(b)
+      d<-tibble::rownames_to_column(c, " ")
+      d<-d %>% mutate_if(is.numeric, round)
+      d
+    })
+    output$table <- renderDataTable({DT::datatable(tabela1()
+                                )
+    })
+    
+    ################
+    
+    
+    #Importando o banco de dados desejado
+    import<-function(name){
+      if(name=="Caracterização Informal do Turismo Após 2015"){
+        data<-caracterizacao_informal_turismo_apos_2015
+      }
+      if(name=="Caracterização Informal do Turismo até 2015"){
+        data<-caracterizacao_informal_turismo_ate_2015
+      }
+    }
+    
+    
     #   # app button
     #   output$appBtnVal <- renderText(input$myAppButton)
     #   observeEvent(input$myAppButton, {
@@ -642,21 +709,25 @@ através do link (", a("clique aqui", href = "https://www.ipea.gov.br/extrator/s
     })
     
     
-    
-    df <- data.frame(
+    ass<-reactive({
+          df <- data.frame(
       id = 1:10,
       name = c("Bob", "Ashley", "James", "David", "Jenny",
                "Hans", "Leo", "John", "Emily", "Lee"),
-      age = c(28, 27, 30, 28, 29, 29, 27, 27, 31, 30),
+      age = c(1000, 27, 30, 28, 29, 29, 27, 27, 31, 30),
       grade = c("C", "A", "A", "C", "B", "B", "B", "A", "C", "C"),
       test1_score = c(8.9, 9.5, 9.6, 8.9, 9.1, 9.3, 9.3, 9.9, 8.5, 8.6),
       test2_score = c(9.1, 9.1, 9.2, 9.1, 8.9, 8.5, 9.2, 9.3, 9.1, 8.8),
       final_score = c(9, 9.3, 9.4, 9, 9, 8.9, 9.25, 9.6, 8.8, 8.7),
       registered = c(TRUE, FALSE, TRUE, FALSE, TRUE, TRUE, TRUE, FALSE, FALSE, FALSE),
       stringsAsFactors = FALSE)
-    output$table <- renderFormattable({
+          df
+    })
+
+    
+    output$table2 <- renderFormattable({
       detach("package:plotly", unload=TRUE)
-      formattable(df, list(
+      formattable(ass(), list(
         age = color_tile("white", "orange"),
         grade = formatter("span", style = x ~ ifelse(x == "A",
                                                      style(color = "green", font.weight = "bold"), NA)),
